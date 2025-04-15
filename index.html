@@ -1,0 +1,3831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Windows XP Portfolio</title>
+  <link rel="stylesheet" href="https://unpkg.com/xp.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Libre+Baskerville&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  
+  <!-- Hidden audio element for the Windows XP startup sound continuity -->
+  <audio id="startupSound" src="assets/boot/windows-xp-startup.mp3" preload="auto" style="display:none;"></audio>
+  
+  <style>
+    /* Base Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('bliss.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    /* Desktop Styles */
+    .desktop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 40px;
+      padding: 20px;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .icon {
+      width: 64px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .icon img {
+      width: 48px;
+    }
+
+    /* Window Styles */
+    .window {
+      position: absolute;
+      width: 300px;
+      z-index: 10;
+      resize: both;
+      overflow: hidden;
+      min-width: 200px;
+      min-height: 150px;
+    }
+
+    /* Window Body Styles */
+    .window-body {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Resize Handle Styles */
+    .resize-handles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .resize-handle {
+      position: absolute;
+      pointer-events: auto;
+      z-index: 101;
+      background: transparent;
+    }
+
+    .resize-handle.top {
+      top: 0;
+      left: 5px;
+      right: 5px;
+      height: 5px;
+      cursor: n-resize;
+    }
+
+    .resize-handle.right {
+      top: 5px;
+      right: 0;
+      bottom: 5px;
+      width: 5px;
+      cursor: e-resize;
+    }
+
+    .resize-handle.bottom {
+      bottom: 0;
+      left: 5px;
+      right: 5px;
+      height: 5px;
+      cursor: s-resize;
+    }
+
+    .resize-handle.left {
+      top: 5px;
+      left: 0;
+      bottom: 5px;
+      width: 5px;
+      cursor: w-resize;
+    }
+
+    .resize-handle.top-left {
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      cursor: nw-resize;
+    }
+
+    .resize-handle.top-right {
+      top: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      cursor: ne-resize;
+    }
+
+    .resize-handle.bottom-left {
+      bottom: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      cursor: sw-resize;
+    }
+
+    .resize-handle.bottom-right {
+      bottom: 0;
+      right: 0;
+      width: 15px;
+      height: 15px;
+      cursor: se-resize;
+    }
+
+    /* Taskbar Styles */
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: linear-gradient(to bottom, #1f57aa, #2a73ef, #0d4ed8);
+      display: flex;
+      align-items: center;
+      padding: 0;
+      color: white;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+
+    /* Start Button Styles */
+    .start-button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 38px;
+      padding: 0 12px 0 8px;
+      background: linear-gradient(to bottom, #2be52b, #13bd13, #02a702, #008800);
+      border-radius: 0 15px 15px 0;
+      color: white;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      border: 1px solid #005700;
+      border-left: none;
+      margin-right: 10px;
+      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      min-width: 90px;
+    }
+
+    .start-button::before {
+      content: '';
+      position: absolute;
+      left: -2px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, #2be52b, #13bd13, #02a702, #008800);
+      border-radius: 0 0 0 12px;
+    }
+
+    .start-button:hover {
+      background: linear-gradient(to bottom, #3cf53c, #21ca21, #10b510, #0a990a);
+    }
+
+    .start-button:active, .start-button.active {
+      background: linear-gradient(to bottom, #0a990a, #10b510, #21ca21, #3cf53c);
+    }
+
+    .start-button img {
+      width: 24px;
+      height: 24px;
+      margin-right: 5px;
+    }
+
+    .taskbar-items {
+      flex-grow: 1;
+      display: flex;
+      height: 100%;
+      align-items: center;
+      padding: 0 5px;
+    }
+
+    .taskbar-item {
+      background: linear-gradient(to bottom, #3178d7, #255bab);
+      border: 1px solid #103c75;
+      border-radius: 2px;
+      padding: 2px 10px;
+      height: 32px;
+      margin-right: 3px;
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 11px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .taskbar-item.active {
+      display: flex;
+      background: linear-gradient(to bottom, #3983e5, #2c6bc7);
+    }
+
+    .taskbar-item img {
+      height: 16px;
+      margin-right: 5px;
+    }
+
+    .tray {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      background: linear-gradient(to bottom, #2868c8, #1e55ae);
+      padding: 0 10px;
+      border-left: 1px solid #163e7e;
+    }
+
+    .clock {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 11px;
+      padding: 5px;
+    }
+
+    /* Start Menu Styles */
+    .start-menu {
+      position: fixed;
+      bottom: 40px;
+      left: 0;
+      width: 430px;
+      background: #ffffff;
+      border: 2px solid #0c3d99;
+      border-bottom: none;
+      box-shadow: 2px -2px 12px rgba(0,0,0,0.3);
+      z-index: 2000;
+      display: none;
+      overflow: hidden;
+      border-top-right-radius: 7px;
+      border-top-left-radius: 7px;
+    }
+    
+    .start-header {
+      height: 75px;
+      background: linear-gradient(to right, #215eba, #2a73ef, #76b9fb);
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .user-info img {
+      width: 50px;
+      height: 50px;
+      border-radius: 5px;
+      margin-right: 10px;
+      background: white;
+      padding: 2px;
+    }
+    
+    .start-content {
+      display: flex;
+      height: 320px;
+    }
+    
+    .start-left {
+      width: 60%;
+      background: white;
+      padding: 5px 0;
+      overflow-y: auto;
+    }
+    
+    .start-right {
+      width: 40%;
+      background: #d3e5fa;
+      border-left: 1px solid #b1c8e8;
+      padding: 5px 0;
+      overflow-y: auto;
+    }
+    
+    .start-item {
+      display: flex;
+      align-items: center;
+      padding: 7px 15px;
+      cursor: pointer;
+      white-space: nowrap;
+      margin: 2px 0;
+    }
+    
+    .start-item:hover {
+      background-color: #2f71cd;
+      color: white;
+    }
+    
+    .start-item.pin {
+      font-weight: bold;
+    }
+    
+    .start-item img {
+      width: 24px;
+      height: 24px;
+      margin-right: 12px;
+    }
+    
+    .start-separator {
+      height: 1px;
+      background: #d2d2d2;
+      margin: 8px 15px;
+    }
+
+    .start-category {
+      font-weight: bold;
+      color: #0c3d99;
+      padding: 5px 15px;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+
+    .start-recent {
+      background-color: #f1f5fb;
+      margin: 0 0 15px 0;
+      padding: 5px 0;
+      border-bottom: 1px solid #d2d2d2;
+    }
+
+    .start-recent-title {
+      color: #333;
+      font-weight: bold;
+      padding: 4px 15px;
+      font-size: 11px;
+    }
+
+    .start-footer {
+      display: flex;
+      justify-content: flex-end;
+      border-top: 1px solid #b1c8e8;
+      padding: 10px 15px;
+      background: #d3e5fa;
+    }
+
+    .all-programs {
+      display: flex;
+      align-items: center;
+      color: #0c3d99;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .all-programs:hover {
+      text-decoration: underline;
+    }
+
+    .all-programs img {
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+    }
+
+    .start-submenu {
+      display: none;
+      position: absolute;
+      left: 100%;
+      top: 0;
+      background: white;
+      border: 1px solid #b1c8e8;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+      min-width: 200px;
+      z-index: 2100;
+      padding: 5px 0;
+    }
+    
+    .start-item-with-submenu {
+      position: relative;
+      margin: 4px 0;
+    }
+    
+    .start-item-with-submenu .start-item {
+      padding-right: 25px;
+    }
+    
+    .start-item-with-submenu:hover .start-submenu {
+      display: block;
+    }
+    
+    .start-item-with-submenu::after {
+      content: '►';
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: #999;
+    }
+    
+    .start-item-with-submenu:hover::after {
+      color: white;
+    }
+
+    /* Welcome Introduction Styles */
+    .welcome-intro {
+      position: absolute;
+      right: 100px;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: right;
+      z-index: 5;
+      animation: fadeOut 1.5s forwards;
+      animation-delay: 10s;
+    }
+    
+    .intro-text {
+      color: #0066cc;
+      font-family: 'Franklin Gothic Medium', 'Trebuchet MS', 'Tahoma', sans-serif;
+      text-shadow: 
+        0 0 6px rgba(255, 255, 255, 1),
+        0 0 12px rgba(255, 255, 255, 0.8),
+        2px 2px 4px rgba(0, 0, 0, 0.7);
+      width: 700px;
+      font-weight: bold;
+    }
+    
+    .intro-line {
+      font-size: 84px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1.2s forwards;
+      line-height: 1.3;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+    
+    .intro-line.delayed {
+      font-size: 66px;
+      animation-delay: 1.5s;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    /* Contact Window Styles */
+    .contact-options ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+    }
+
+    .contact-options ul li {
+      margin-bottom: 10px;
+    }
+
+    .contact-options ul li a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #0066cc;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .contact-options ul li a img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    .send-message form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .send-message form label {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 14px;
+      color: #333;
+      align-self: flex-start;
+    }
+
+    .send-message form input,
+    .send-message form textarea {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 14px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 350px;
+      box-sizing: border-box;
+    }
+
+    .send-message form button {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 16px;
+      padding: 12px 20px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      margin: 0;
+    }
+
+    .send-message form button:hover {
+      background-color: #004a99;
+      transform: translateY(-2px);
+    }
+
+    .send-message form button:active {
+      background-color: #003366;
+      transform: translateY(1px);
+    }
+
+    .send-message form fieldset {
+      border: none;
+      padding: 0;
+      margin: 10px 0 0 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Resume Window Styles */
+    .resume-window-body {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      position: relative;
+    }
+
+    .resume-content {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 15px 15px 60px 15px;
+      background-color: white;
+      min-height: 0;
+      max-height: none;
+    }
+
+    .resume-header {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid #c0c0c0;
+      background: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
+    }
+
+    .resume-avatar {
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+      border: 1px solid #999;
+      padding: 2px;
+      background-color: white;
+    }
+
+    .resume-title {
+      flex-grow: 1;
+    }
+
+    .resume-title h2 {
+      margin: 0 0 5px 0;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 20px;
+      color: #0055aa;
+    }
+
+    .resume-subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .resume-section {
+      margin-bottom: 20px;
+      border: 1px solid #d4d4d4;
+      border-radius: 3px;
+      background-color: #f9f9f9;
+    }
+
+    .resume-section-header {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      background: linear-gradient(to bottom, #e9e9e9, #d5d5d5);
+      border-bottom: 1px solid #d4d4d4;
+    }
+
+    .resume-section-header img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    .resume-section-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-family: 'Tahoma', sans-serif;
+      color: #0055aa;
+    }
+
+    .resume-item {
+      padding: 10px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .resume-item:last-child {
+      border-bottom: none;
+    }
+
+    .resume-item h4 {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .resume-item-meta {
+      color: #777;
+      font-size: 12px;
+      margin: 0 0 8px 0;
+    }
+
+    .resume-item ul {
+      margin: 8px 0 0 0;
+      padding-left: 20px;
+      font-size: 13px;
+    }
+
+    .resume-item ul li {
+      margin-bottom: 4px;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+      padding: 10px;
+    }
+
+    .skill-category h4 {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .skill-category p {
+      margin: 0;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .resume-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      border-top: 1px solid #c0c0c0;
+      background: linear-gradient(to bottom, #e0e0e0, #f5f5f5);
+      text-align: center;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    /* Button Styles */
+    .button, .resume-download-btn {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 14px;
+      padding: 8px 16px;
+      background: linear-gradient(to bottom, #e0e0e0, #c3c3c3);
+      border: 1px solid #888;
+      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    .button:hover, .resume-download-btn:hover {
+      background: linear-gradient(to bottom, #f0f0f0, #d0d0d0);
+    }
+
+    .button:active, .resume-download-btn:active {
+      background: linear-gradient(to bottom, #c3c3c3, #a0a0a0);
+      box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .resume-download-btn img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    /* Projects Window Styles */
+    .projects-container {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      overflow-y: auto;
+      height: 100%;
+    }
+
+    .projects-container h3 {
+      font-size: 18px;
+      color: #0055aa;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .project-item {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .project-item h4 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .project-item p {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* Games Window Styles */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .cell:hover {
+      background: #e0e0e0;
+    }
+
+    /* Windows XP Game Styles */
+    .xp-window-body {
+      background-color: #ECE9D8;
+      padding: 10px;
+      font-family: 'Tahoma', sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .xp-game-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 8px;
+      background-color: #ECE9D8;
+      border: 1px solid #aca899;
+      padding: 10px;
+      margin: 5px;
+      overflow: visible;
+    }
+
+    /* Game styles for both games */
+    .xp-window-header {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(to right, #0A246A, #3A6EA5);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 3px;
+    }
+
+    .xp-window-header img {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+
+    .xp-window-header h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .xp-game-status {
+      background-color: #f0f0f0;
+      padding: 6px;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      color: #003399;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 5px;
+      font-family: 'Tahoma', sans-serif;
+    }
+
+    .xp-game-message {
+      text-align: center;
+      margin: 0;
+      font-weight: bold;
+      color: #003399;
+      min-height: 20px;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 12px;
+    }
+
+    .xp-game-controls {
+      margin-top: 5px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Tic Tac Toe specific styles */
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
+      max-width: 280px;
+      margin: 5px auto;
+      background: #7B9EBD;
+      padding: 5px;
+      border-radius: 0;
+    }
+
+    #game-board .cell {
+      width: 88px;
+      height: 88px;
+      background: #f0f0f0;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Tahoma', sans-serif;
+    }
+
+    #game-board .cell:hover:not(.x):not(.o) {
+      background: #e0e0e0;
+    }
+
+    #game-board .cell:active:not(.x):not(.o) {
+      border-color: #808080 #ffffff #ffffff #808080;
+      background: #d0d0d0;
+    }
+
+    #game-board .cell.x {
+      color: #0066cc;
+    }
+
+    #game-board .cell.o {
+      color: #cc0000;
+    }
+
+    #game-board .cell.win {
+      background-color: #bdeabd;
+      animation: winBlink 1s infinite;
+    }
+
+    @keyframes winBlink {
+      0% { background-color: #bdeabd; }
+      50% { background-color: #8cd98c; }
+      100% { background-color: #bdeabd; }
+    }
+
+    .player-x {
+      color: #0066cc;
+      font-weight: bold;
+    }
+
+    .player-o {
+      color: #cc0000;
+      font-weight: bold;
+    }
+
+    #reset-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 12px;
+      padding: 5px 10px;
+      background: #ECE9D8;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      color: #000000;
+      cursor: pointer;
+      margin: 5px auto;
+    }
+
+    #reset-button:hover {
+      background-color: #f5f3e7;
+    }
+
+    #reset-button:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+      background-color: #e0dccb;
+      padding: 6px 9px 4px 11px;
+    }
+
+    #reset-button img {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+
+    /* Music Player Styles */
+    .xp-music-player {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .xp-album-art {
+      width: 100%;
+      height: 120px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 1px solid #7B9EBD;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .xp-album-art img {
+      width: 80px;
+      height: 80px;
+      z-index: 1;
+    }
+
+    .xp-visualization {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding: 10px;
+      z-index: 0;
+    }
+
+    .xp-visualization .bar {
+      width: 10px;
+      background: linear-gradient(to top, #1e90ff, #87cefa);
+      margin: 0 4px;
+      height: 5px;
+      animation-name: visualize;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+
+    .xp-visualization .bar:nth-child(1) { animation-duration: 0.5s; }
+    .xp-visualization .bar:nth-child(2) { animation-duration: 0.7s; }
+    .xp-visualization .bar:nth-child(3) { animation-duration: 0.3s; }
+    .xp-visualization .bar:nth-child(4) { animation-duration: 0.6s; }
+    .xp-visualization .bar:nth-child(5) { animation-duration: 0.4s; }
+
+    @keyframes visualize {
+      0% { height: 5px; }
+      100% { height: 50px; }
+    }
+
+    .xp-track-info {
+      background: #fff;
+      border: 1px solid #7B9EBD;
+      border-radius: 3px;
+      padding: 8px;
+      color: #003399;
+      font-weight: bold;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .xp-progress {
+      margin-top: 8px;
+    }
+
+    .xp-progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #f0f0f0;
+      border: 1px solid #7B9EBD;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .xp-progress-fill {
+      background: linear-gradient(to right, #4B6EAF, #7A96C2);
+      width: 0%;
+      height: 100%;
+      transition: width 0.1s linear;
+    }
+
+    .xp-time {
+      font-size: 10px;
+      margin-top: 3px;
+      color: #666;
+    }
+
+    .xp-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .xp-control-button {
+      background: linear-gradient(to bottom, #F7FBFF, #EBF5FE, #D7E9FA, #C3DAF9);
+      border: 1px solid #7B9EBD;
+      border-radius: 3px;
+      padding: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .xp-control-button:hover {
+      background: linear-gradient(to bottom, #ECF5FC, #D9EBF9, #C3DAF9, #BEDAF9);
+    }
+
+    .xp-control-button:active {
+      background: #BEDAF9;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .xp-control-button img {
+      width: 16px;
+      height: 16px;
+    }
+
+    .xp-volume {
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+    }
+
+    .xp-volume img {
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+    }
+
+    .xp-volume input[type="range"] {
+      width: 80px;
+      accent-color: #3A6EA5;
+    }
+
+    .xp-playlist {
+      max-height: 100px;
+      overflow-y: auto;
+      background: white;
+      border: 1px solid #ccc;
+    }
+
+    .xp-playlist-item {
+      display: flex;
+      align-items: center;
+      padding: 5px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+
+    .xp-playlist-item:hover {
+      background-color: #ECF5FC;
+    }
+
+    .xp-playlist-item.selected {
+      background-color: #D7E9FA;
+    }
+
+    .xp-playlist-item img {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+
+    .xp-playlist-item span {
+      font-size: 12px;
+    }
+
+    /* Skills Window Styles */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid #7B9EBD;
+      border-radius: 3px;
+      overflow-y: auto;
+      height: calc(100% - 50px);
+    }
+
+    .skill-category {
+      background: linear-gradient(to bottom, #EBF4FA, #DCE8F4);
+      border: 1px solid #7B9EBD;
+      border-radius: 3px;
+      padding: 10px;
+      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .skill-category h4 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #003399;
+      font-weight: bold;
+    }
+
+    .skill-category ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .skill-category ul li {
+      font-size: 12px;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    /* Minesweeper Styles */
+    .minesweeper-container {
+      padding: 6px;
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+    }
+
+    .minesweeper-header {
+      margin-bottom: 6px;
+    }
+
+    .minesweeper-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #c0c0c0;
+      padding: 4px;
+      border: 2px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+    }
+
+    .mine-counter, .timer {
+      background: #000;
+      color: #ff0000;
+      font-family: 'Digital', monospace;
+      padding: 0 3px;
+      font-size: 24px;
+      width: 60px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #808080;
+    }
+
+    .reset-button {
+      width: 35px;
+      height: 35px;
+      font-size: 24px;
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .minesweeper-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 30px);
+      grid-template-rows: repeat(9, 30px);
+      gap: 1px;
+      background: #808080;
+      border: 2px solid;
+      border-color: #808080 #ffffff #ffffff #808080;
+    }
+
+    .cell {
+      width: 30px;
+      height: 30px;
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      font-size: 16px;
+      line-height: 1;
+      padding: 0;
+      font-family: 'Tahoma', sans-serif;
+    }
+
+    .cell:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+    }
+
+    .cell.revealed {
+      border: 1px solid #808080;
+      background: #c0c0c0;
+    }
+
+    .cell.mine {
+      background: #ff0000;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .cell.flagged {
+      background: #c0c0c0;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .number-1 { color: #0000ff; }
+    .number-2 { color: #008200; }
+    .number-3 { color: #ff0000; }
+    .number-4 { color: #000084; }
+    .number-5 { color: #840000; }
+    .number-6 { color: #008284; }
+    .number-7 { color: #840084; }
+    .number-8 { color: #757575; }
+
+    /* Tic Tac Toe Styles */
+    .game-button {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin: 10px;
+      background: linear-gradient(to bottom, #F7FBFF, #EBF5FE, #D7E9FA, #C3DAF9);
+      border: 1px solid #7B9EBD;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .game-button:hover {
+      background: linear-gradient(to bottom, #ECF5FC, #D9EBF9, #C3DAF9, #BEDAF9);
+    }
+
+    .game-button:active {
+      background: #BEDAF9;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .game-button img {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+    }
+
+    .game-button span {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 14px;
+      color: #003399;
+    }
+
+    #tictactoeBoard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
+      max-width: 280px;
+      margin: 20px auto;
+      background: #7B9EBD;
+      padding: 5px;
+      border-radius: 3px;
+    }
+
+    #tictactoeBoard .cell {
+      width: 88px;
+      height: 88px;
+      background: linear-gradient(to bottom, #FFFFFF, #F0F0F0);
+      border: 1px solid #7B9EBD;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s;
+    }
+
+    #tictactoeBoard .cell:hover:not(.x):not(.o) {
+      background: linear-gradient(to bottom, #ECF5FC, #D9EBF9);
+      box-shadow: 0 0 2px #7B9EBD;
+    }
+
+    #tictactoeBoard .cell.x {
+      color: #0066cc;
+    }
+
+    #tictactoeBoard .cell.o {
+      color: #cc0000;
+    }
+
+    #tictactoeBoard .cell.win {
+      animation: winPulse 1s infinite;
+      background-color: #D7F8B0;
+    }
+
+    .xp-game-status {
+      background-color: #fff;
+      padding: 8px;
+      border: 1px solid #7B9EBD;
+      border-radius: 3px;
+      color: #003399;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .player-x {
+      color: #0066cc;
+    }
+
+    .player-o {
+      color: #cc0000;
+    }
+
+    .xp-game-message {
+      text-align: center;
+      margin: 10px 0;
+      font-weight: bold;
+      color: #003399;
+      min-height: 24px;
+    }
+
+    @keyframes winPulse {
+      0% { box-shadow: 0 0 0 0 rgba(75, 181, 67, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(75, 181, 67, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(75, 181, 67, 0); }
+    }
+
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
+      max-width: 280px;
+      margin: 15px auto;
+      background: #7B9EBD;
+      padding: 5px;
+      border-radius: 0;
+    }
+
+    #game-board .cell {
+      width: 88px;
+      height: 88px;
+      background: #f0f0f0;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Tahoma', sans-serif;
+    }
+
+    #game-board .cell:hover:not(.x):not(.o) {
+      background: #e0e0e0;
+    }
+
+    #game-board .cell:active:not(.x):not(.o) {
+      border-color: #808080 #ffffff #ffffff #808080;
+      background: #d0d0d0;
+    }
+
+    #game-board .cell.x {
+      color: #0066cc;
+    }
+
+    #game-board .cell.o {
+      color: #cc0000;
+    }
+
+    #game-board .cell.win {
+      background-color: #bdeabd;
+      animation: winBlink 1s infinite;
+    }
+
+    @keyframes winBlink {
+      0% { background-color: #bdeabd; }
+      50% { background-color: #8cd98c; }
+      100% { background-color: #bdeabd; }
+    }
+
+    .player-x {
+      color: #0066cc;
+      font-weight: bold;
+    }
+
+    .player-o {
+      color: #cc0000;
+      font-weight: bold;
+    }
+
+    .xp-game-status {
+      background-color: #f0f0f0;
+      padding: 8px;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      color: #003399;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+      font-family: 'Tahoma', sans-serif;
+    }
+
+    .xp-game-message {
+      text-align: center;
+      margin: 10px 0;
+      font-weight: bold;
+      color: #003399;
+      min-height: 24px;
+      font-family: 'Tahoma', sans-serif;
+    }
+
+    #reset-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 12px;
+      padding: 5px 10px;
+      background: #ECE9D8;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      color: #000000;
+      cursor: pointer;
+      margin: 5px auto;
+    }
+
+    #reset-button:hover {
+      background-color: #f5f3e7;
+    }
+
+    #reset-button:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+      background-color: #e0dccb;
+      padding: 6px 9px 4px 11px;
+    }
+
+    #reset-button img {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+
+    .xp-game-container {
+      background-color: #ECE9D8;
+      border: 1px solid #aca899;
+      padding: 10px;
+      margin: 5px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 20px);
+    }
+
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
+      max-width: 280px;
+      margin: 10px auto;
+      background: #7B9EBD;
+      padding: 5px;
+      border-radius: 0;
+    }
+
+    .xp-game-controls {
+      margin-top: 10px;
+    }
+
+    #reset-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 12px;
+      padding: 5px 10px;
+      background: #ECE9D8;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      color: #000000;
+      cursor: pointer;
+      margin: 5px auto;
+    }
+
+    .xp-reset-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 12px;
+      padding: 5px 10px;
+      background: #ECE9D8;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      color: #000000;
+      cursor: pointer;
+      margin: 10px auto;
+    }
+
+    .xp-reset-button:hover {
+      background-color: #f5f3e7;
+    }
+
+    .xp-reset-button:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+      background-color: #e0dccb;
+      padding: 6px 9px 4px 11px;
+    }
+
+    .xp-reset-button img {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+
+    /* Contact Window XP Styles */
+    .contact-window-body {
+      background-color: #ECE9D8;
+      padding: 0;
+      font-family: 'Tahoma', sans-serif;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      height: 100%;
+    }
+
+    .contact-window-header {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(to right, #0A246A, #3A6EA5);
+      color: white;
+      padding: 8px 12px;
+      border-bottom: 1px solid #0A246A;
+    }
+
+    .contact-window-header img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    .contact-window-header h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .contact-window-content {
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      overflow: auto;
+    }
+
+    .contact-section {
+      border: 1px solid #7B9EBD;
+      background-color: #f5f5f5;
+      border-radius: 0;
+      margin-bottom: 15px;
+      padding: 10px;
+    }
+
+    .contact-section h3 {
+      color: #003399;
+      font-size: 14px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-weight: bold;
+      border-bottom: 1px solid #d9d9d9;
+      padding-bottom: 5px;
+    }
+
+    .contact-options ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .contact-options ul li {
+      margin-bottom: 8px;
+    }
+
+    .contact-options ul li a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #0066cc;
+      font-size: 12px;
+      padding: 5px;
+      border-radius: 0;
+    }
+
+    .contact-options ul li a:hover {
+      background-color: #e8f0f7;
+    }
+
+    .contact-options ul li a img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    .xp-form-group {
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .xp-label {
+      font-size: 12px;
+      color: #000000;
+      margin-bottom: 3px;
+    }
+
+    .xp-input, .xp-textarea {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 12px;
+      padding: 5px;
+      border: 1px solid #7B9EBD;
+      background-color: #ffffff;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .xp-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .xp-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tahoma', sans-serif;
+      font-size: 12px;
+      padding: 5px 12px;
+      background: #ECE9D8;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      color: #000000;
+      cursor: pointer;
+      min-width: 80px;
+      align-self: flex-end;
+    }
+
+    .xp-button:hover {
+      background-color: #f5f3e7;
+    }
+
+    .xp-button:active {
+      border-color: #808080 #ffffff #ffffff #808080;
+      background-color: #e0dccb;
+      padding: 6px 11px 4px 13px;
+    }
+
+    .xp-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 5px;
+    }
+
+    .xp-form-icon {
+      width: 48px;
+      height: 48px;
+      float: left;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    /* End of Contact Window Styles */
+
+    /* Command Prompt Styles - Reset all borders and ensure proper appearance */
+    .cmd-window, #cmdWindow.window, #cmdWindow {
+      border: none !important;
+      background-color: #000000 !important;
+      box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .cmd-title-bar, #cmdWindow .title-bar {
+      background: linear-gradient(to right, #0A246A, #3A6EA5) !important;
+      height: 25px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 0 5px !important;
+      margin: 0 !important;
+      border: none !important;
+    }
+
+    .cmd-window-body, #cmdWindow .window-body {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+      font-family: 'Consolas', 'Courier New', monospace !important;
+      padding: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      height: calc(100% - 25px) !important;
+      overflow: hidden !important;
+      border: none !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .cmd-output {
+      background-color: #000000 !important;
+      flex: 1 !important;
+      white-space: pre-wrap !important;
+      padding: 10px !important;
+      font-size: 14px !important;
+      line-height: 1.3 !important;
+      overflow-y: auto !important;
+      border: none !important;
+      margin: 0 !important;
+    }
+
+    .cmd-input-line {
+      background-color: #000000 !important;
+      display: flex !important;
+      padding: 0 10px 10px 10px !important;
+      border: none !important;
+      margin: 0 !important;
+      align-items: center !important;
+      height: 24px !important;
+    }
+
+    .cmd-prompt {
+      color: #ffffff !important;
+      margin-right: 5px !important;
+      user-select: none !important;
+      background-color: #000000 !important;
+      font-family: 'Consolas', 'Courier New', monospace !important;
+      font-size: 14px !important;
+      line-height: 24px !important;
+      height: 24px !important;
+      padding: 0 !important;
+      vertical-align: middle !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .cmd-input {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+      border: none !important;
+      outline: none !important;
+      flex: 1 !important;
+      font-family: 'Consolas', 'Courier New', monospace !important;
+      font-size: 14px !important;
+      box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      height: 24px !important;
+      line-height: 24px !important;
+      vertical-align: middle !important;
+    }
+
+    .cmd-line {
+      margin: 0;
+      padding: 0;
+    }
+
+    .cmd-error { color: #ff6b6b; }
+    .cmd-success { color: #69db7c; }
+    .cmd-info { color: #4dabf7; }
+    .cmd-warning { color: #ffff00; }
+
+    /* Custom style for contact icons */
+    .contact-icon {
+      width: 24px !important;
+      height: 24px !important;
+      object-fit: contain;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="desktop">
+    <div class="icon" onclick="openWindow('contactWindow')">
+      <img src="assets\windowicons\Address_Book.png" alt="Contact"/>
+      <div>Contact Me</div>
+    </div>
+    <div class="icon" onclick="openWindow('resumeWindow')">
+      <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="Resume"/>
+      <div>Resume</div>
+    </div>
+    <div class="icon" onclick="openWindow('projectsWindow')">
+      <img src="assets\windowicons\Folder_View.png" alt="Projects" />
+      <div>Projects</div>
+    </div>
+    <div class="icon" onclick="openWindow('gamesWindow')">
+      <img src="assets\start\Game.png" alt="Games">
+      <div>Games</div>
+    </div>
+    <div class="icon" onclick="openWindow('musicWindow')">
+      <img src="assets\start\My_Music.png" alt="Music Player">
+      <div>Music Player</div>
+    </div>
+    
+    <div class="icon" onclick="openWindow('skillsWindow')">
+      <img src="assets\windowicons\tool.png" alt="Skills">
+      <div>Skills</div>
+    </div>
+    
+    <div id="welcome-intro" class="welcome-intro">
+      <div class="intro-text">
+        <div class="intro-line">Hi, I'm Joshith</div>
+        <div class="intro-line delayed">Welcome to my website</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Windows -->
+  <div id="contactWindow" class="window" style="display:none; top:50px; left:50px; width:400px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Contact Me</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWindow('contactWindow')"></button>
+        <button aria-label="Maximize" onclick="maximizeWindow('contactWindow')"></button>
+        <button aria-label="Close" onclick="closeWindow('contactWindow')"></button>
+      </div>
+    </div>
+    <div class="window-body contact-window-body">
+      <div class="contact-window-header">
+        <img src="assets\start\profilephoto.jpg" alt="Profile" class="xp-form-icon">
+        <h3>Contact Me</h3>
+      </div>
+      
+      <div class="contact-window-content">
+        <div class="contact-section">
+          <h3>Connect with me:</h3>
+          <ul>
+            <li>
+              <a href="https://www.linkedin.com/in/joshith99/" target="_blank">
+                <img src="assets\contactme\linkedin.png" alt="LinkedIn" class="contact-icon" />
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://twitter.com/" target="_blank">
+                <img src="assets\contactme\twitter.png" alt="Twitter" class="contact-icon" />
+                Twitter
+              </a>
+            </li>
+            <li>
+              <a href="mailto:gsaijoshithreddy@gmail.com">
+                <img src="assets\contactme\email.png" alt="Email" class="contact-icon" />
+                Email
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="contact-section">
+          <h3>Send me a message:</h3>
+          <img src="assets\contactme\message.png" alt="Write" class="xp-form-icon" style="width: 32px; height: 32px; object-fit: contain;">
+          <form id="contactForm">
+            <div class="xp-form-group">
+              <label for="name" class="xp-label">Name:</label>
+              <input type="text" id="name" name="name" placeholder="Your Name" required class="xp-input">
+            </div>
+            <div class="xp-form-group">
+              <label for="email" class="xp-label">Email:</label>
+              <input type="email" id="email" name="email" placeholder="Your Email" required class="xp-input">
+            </div>
+            <div class="xp-form-group">
+              <label for="message" class="xp-label">Message:</label>
+              <textarea id="message" name="message" placeholder="Your Message" rows="4" required class="xp-textarea"></textarea>
+            </div>
+            <div class="xp-buttons">
+              <button type="submit" class="xp-button">Send</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resume Window -->
+  <div id="resumeWindow" class="window" style="display:none; top:120px; left:250px; width:500px; height:550px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Resume - Joshith</div>
+      <div class="title-bar-controls">
+        <button onclick="minimizeWindow('resumeWindow')" aria-label="Minimize"></button>
+        <button onclick="maximizeWindow('resumeWindow')" aria-label="Maximize"></button>
+        <button onclick="closeWindow('resumeWindow')" aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body resume-window-body">
+      <div class="resume-header">
+        <img src="assets\start\profilephoto.jpg" alt="Profile" class="resume-avatar">
+        <div class="resume-title">
+          <h2>Sai Joshith Reddy Gopireddy</h2>
+          <p class="resume-subtitle">Student at VIT Vellore</p>
+        </div>
+      </div>
+      
+      <div class="resume-content">
+        <div class="resume-section">
+          <div class="resume-section-header">
+            <img src="assets\resume\Notepad.png" alt="Education">
+            <h3>Education</h3>
+          </div>
+          <div class="resume-item">
+            <h4>Bachelor of Technology - BTech, Computer Science</h4>
+            <p class="resume-item-meta">Vellore Institute of Technology • June 2023 - August 2027</p>
+          </div>
+          <div class="resume-item">
+            <h4>Higher Secondary Education</h4>
+            <p class="resume-item-meta">Narayana Junior College - India • May 2021 - August 2023</p>
+          </div>
+          <div class="resume-item">
+            <h4>Secondary Education</h4>
+            <p class="resume-item-meta">Shree Swaminarayan Gurukul International School Hyderabad • June 2019 - May 2021</p>
+          </div>
+          <div class="resume-item">
+            <h4>Primary Education</h4>
+            <p class="resume-item-meta">Sri Chaitanya School, L.B nagar • June 2016 - May 2019</p>
+          </div>
+          <div class="resume-item">
+            <h4>Early Education</h4>
+            <p class="resume-item-meta">Akshara International School • June 2013 - April 2016</p>
+          </div>
+        </div>
+
+        <div class="resume-section">
+          <div class="resume-section-header">
+            <img src="assets\windowicons\tool.png" alt="Skills">
+            <h3>Technical Skills</h3>
+          </div>
+          <div class="skills-grid">
+            <div class="skill-category">
+              <h4>Programming Languages</h4>
+              <p>C++ • Java • Python</p>
+            </div>
+            <div class="skill-category">
+              <h4>Languages</h4>
+              <p>Telugu (Native) • Hindi (Limited Working) • English (Professional Working) • Spanish (Elementary)</p>
+            </div>
+            <div class="skill-category">
+              <h4>Tools</h4>
+              <p>Git • GitHub • VS Code</p>
+            </div>
+            <div class="skill-category">
+              <h4>Contact</h4>
+              <p>Hyderabad, Telangana, India</p>
+              <p>Email: gsaijoshithreddy@gmail.com</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="resume-section">
+          <div class="resume-section-header">
+            <img src="https://win98icons.alexmeub.com/icons/png/directory_favorites-4.png" alt="Projects">
+            <h3>Profiles</h3>
+          </div>
+          <div class="resume-item">
+            <h4>LinkedIn</h4>
+            <p><a href="https://www.linkedin.com/in/joshith99/" target="_blank">www.linkedin.com/in/joshith99</a></p>
+          </div>
+          <div class="resume-item">
+            <h4>GitHub</h4>
+            <p><a href="https://github.com/joshith99" target="_blank">github.com/joshith99</a></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="resume-footer">
+        <button class="resume-download-btn" onclick="downloadResume()">
+          <img src="https://win98icons.alexmeub.com/icons/png/file_download-0.png" alt="Download">
+          Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects Window -->
+  <div id="projectsWindow" class="window" style="display:none; top:140px; left:400px; width:600px; height:400px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Projects</div>
+      <div class="title-bar-controls">
+        <button onclick="minimizeWindow('projectsWindow')" aria-label="Minimize"></button>
+        <button onclick="maximizeWindow('projectsWindow')" aria-label="Maximize"></button>
+        <button onclick="closeWindow('projectsWindow')" aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="projects-container">
+        <h3>Academic Projects</h3>
+        <div class="project-item">
+          <h4>Windows XP Portfolio</h4>
+          <p>A personal portfolio website designed to replicate the Windows XP experience. Built with HTML, CSS, and JavaScript to showcase my skills in web development.</p>
+        </div>
+        <div class="project-item">
+          <h4>C++ Data Structures Project</h4>
+          <p>Implementation of various data structures and algorithms in C++. Includes sorting algorithms, linked lists, and binary trees with practical applications.</p>
+        </div>
+        <div class="project-item">
+          <h4>Java Programming Assignments</h4>
+          <p>Collection of Java programs demonstrating object-oriented programming concepts, inheritance, polymorphism, and exception handling.</p>
+        </div>
+        <div class="project-item">
+          <h4>Python Data Analysis</h4>
+          <p>Simple data analysis projects using Python libraries such as NumPy and Pandas to process and visualize academic datasets.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Games Window -->
+  <div id="gamesWindow" class="window" style="display:none; top:100px; left:100px; width:400px; height:500px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Games</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWindow('gamesWindow')"></button>
+        <button aria-label="Maximize" onclick="maximizeWindow('gamesWindow')"></button>
+        <button aria-label="Close" onclick="closeWindow('gamesWindow')"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="games-container">
+        <div class="game-button" onclick="openMinesweeper()">
+          <img src="https://win98icons.alexmeub.com/icons/png/minesweeper-0.png" alt="Minesweeper">
+          <span>Minesweeper</span>
+        </div>
+        <div class="game-button" onclick="openTicTacToe()">
+          <img src="assets\games\tic-tac-toe.png" alt="Tic Tac Toe">
+          <span>Tic Tac Toe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minesweeper Game Window -->
+  <div id="minesweeperWindow" class="window" style="display:none; top:150px; left:150px; width:320px; height:400px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Minesweeper</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWindow('minesweeperWindow')"></button>
+        <button aria-label="Maximize" onclick="maximizeWindow('minesweeperWindow')"></button>
+        <button aria-label="Close" onclick="closeWindow('minesweeperWindow')"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="minesweeper-container">
+        <div class="minesweeper-header">
+          <div class="minesweeper-controls">
+            <div class="mine-counter">000</div>
+            <button class="reset-button" onclick="resetMinesweeper()">😊</button>
+            <div class="timer">000</div>
+          </div>
+        </div>
+        <div class="minesweeper-grid" id="minesweeperGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Music Player Window -->
+  <div id="musicWindow" class="window" style="display:none; top:170px; left:300px; width:350px; height:400px;">
+    <div class="title-bar">
+      <div class="title-bar-text">XP Music Player</div>
+      <div class="title-bar-controls">
+        <button onclick="minimizeWindow('musicWindow')" aria-label="Minimize"></button>
+        <button onclick="maximizeWindow('musicWindow')" aria-label="Maximize"></button>
+        <button onclick="closeWindow('musicWindow')" aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body xp-window-body">
+      <div class="xp-window-header">
+        <img src="assets\start\My_Music.png" alt="Music">
+        <h3>Windows Media Player</h3>
+      </div>
+      
+      <div class="xp-music-player">
+        <div class="xp-album-art">
+          <div class="xp-visualization" id="visualization">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+        
+        <div class="xp-track-info">
+          <div id="nowPlaying">No track selected</div>
+          <div class="xp-progress">
+            <div class="xp-progress-bar" id="progressBar">
+              <div class="xp-progress-fill" id="progressFill"></div>
+            </div>
+            <div class="xp-time">
+              <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="xp-controls">
+          <button class="xp-control-button" onclick="prevTrack()">
+            <img src="assets\music\icons\Back.png" alt="Previous">
+          </button>
+          <button class="xp-control-button" id="playPauseBtn" onclick="togglePlay()">
+            <img src="assets\music\icons\Play.png" alt="Play" id="playPauseIcon">
+          </button>
+          <button class="xp-control-button" onclick="nextTrack()">
+            <img src="assets\music\icons\Forward.png" alt="Next">
+          </button>
+          <div class="xp-volume">
+            <img src="assets\music\icons\Volume.png" alt="Volume">
+            <input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="adjustVolume(this.value)">
+          </div>
+        </div>
+        
+        <fieldset class="xp-fieldset">
+          <legend>Playlist</legend>
+          <div class="xp-playlist">
+            <div class="xp-playlist-item" onclick="selectTrack(0)">
+              <span>How You Remind Me</span>
+            </div>
+            <div class="xp-playlist-item" onclick="selectTrack(1)">
+              <span>Hanging By A Moment</span>
+            </div>
+            <div class="xp-playlist-item" onclick="selectTrack(2)">
+              <span>Yeah! - Usher ft. Lil Jon & Ludacris</span>
+            </div>
+            <div class="xp-playlist-item" onclick="selectTrack(3)">
+              <span>We Belong Together</span>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills Window -->
+  <div id="skillsWindow" class="window" style="display:none; top:150px; left:300px; width:450px; height:400px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Skills</div>
+      <div class="title-bar-controls">
+        <button onclick="minimizeWindow('skillsWindow')" aria-label="Minimize"></button>
+        <button onclick="maximizeWindow('skillsWindow')" aria-label="Maximize"></button>
+        <button onclick="closeWindow('skillsWindow')" aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body xp-window-body">
+      <div class="xp-window-header">
+        <img src="assets\windowicons\tool.png" alt="Skills">
+        <h3>My Skills</h3>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-category">
+          <h4>Frontend</h4>
+          <ul>
+            <li>HTML5</li>
+            <li>CSS3</li>
+            <li>JavaScript</li>
+            <li>React</li>
+            <li>Vue.js</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h4>Backend</h4>
+          <ul>
+            <li>Node.js</li>
+            <li>Python</li>
+            <li>Django</li>
+            <li>Express</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h4>Tools</h4>
+          <ul>
+            <li>Git</li>
+            <li>GitHub</li>
+            <li>VS Code</li>
+            <li>Figma</li>
+            <li>Docker</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h4>Soft Skills</h4>
+          <ul>
+            <li>Teamwork</li>
+            <li>Communication</li>
+            <li>Problem Solving</li>
+            <li>Time Management</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Menu -->
+  <div id="startMenu" class="start-menu">
+    <div class="start-header">
+      <div class="user-info">
+        <img src="assets\start\profilephoto.jpg" alt="User">
+        <span>Joshith</span>
+      </div>
+    </div>
+    <div class="start-content">
+      <div class="start-left">
+        <div class="start-recent">
+          <div class="start-recent-title">Pinned Items</div>
+          <div class="start-item pin" onclick="toggleWindow('contactWindow')">
+            <img src="assets\windowicons\Address_Book.png" alt="Contact">
+            <span>Contact Me</span>
+          </div>
+          <div class="start-item pin" onclick="toggleWindow('resumeWindow')">
+            <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="Resume">
+            <span>Resume</span>
+          </div>
+          <div class="start-item pin" onclick="toggleWindow('projectsWindow')">
+            <img src="assets\windowicons\Folder_View.png" alt="Projects">
+            <span>Projects</span>
+          </div>
+        </div>
+        
+        <div class="start-recent">
+          <div class="start-recent-title">Recently Used</div>
+          <div class="start-item" onclick="toggleWindow('musicWindow')">
+            <img src="assets\start\My_Music.png" alt="Music Player">
+            <span>Music Player</span>
+          </div>
+          <div class="start-item" onclick="toggleWindow('gamesWindow')">
+            <img src="assets\start\Game.png" alt="Games">
+            <span>Games</span>
+          </div>
+        </div>
+
+        <div class="start-item-with-submenu">
+          <div class="start-item">
+            <img src="https://win98icons.alexmeub.com/icons/png/directory_favorites-4.png" alt="My Documents">
+            <span>My Documents</span>
+          </div>
+          <div class="start-submenu">
+            <div class="start-item" onclick="toggleWindow('projectsWindow')">
+              <img src="https://win98icons.alexmeub.com/icons/png/file_document-0.png" alt="Projects">
+              <span>Projects</span>
+            </div>
+            <div class="start-item" onclick="toggleWindow('resumeWindow')">
+              <img src="https://win98icons.alexmeub.com/icons/png/file_document-0.png" alt="Resume">
+              <span>Resume</span>
+            </div>
+            <div class="start-separator"></div>
+            <div class="start-item">
+              <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png" alt="Help">
+              <span>Documentation</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="start-item-with-submenu">
+          <div class="start-item">
+            <img src="assets\windowicons\tool.png" alt="My Computer">
+            <span>My Computer</span>
+          </div>
+          <div class="start-submenu">
+            <div class="start-item" onclick="toggleWindow('skillsWindow')">
+              <img src="https://win98icons.alexmeub.com/icons/png/drive_hard_disk-0.png" alt="Skills">
+              <span>Skills (C:)</span>
+            </div>
+            <div class="start-item" onclick="toggleWindow('musicWindow')">
+              <img src="assets\start\My_Music.png" alt="Music">
+              <span>Music (D:)</span>
+            </div>
+            <div class="start-separator"></div>
+            <div class="start-item" onclick="openCmdPrompt()">
+              <img src="assets\windowicons\Command_Prompt.png" alt="CMD">
+              <span>Command Prompt</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="start-separator"></div>
+
+        <div class="start-item" onclick="openWindow('cmdWindow')">
+          <img src="assets\windowicons\Command_Prompt.png" alt="Run">
+          <span>Run...</span>
+        </div>
+      </div>
+      <div class="start-right">
+        <div class="start-category">Portfolio</div>
+        <div class="start-item" onclick="toggleWindow('contactWindow')">
+          <img src="assets\windowicons\Address_Book.png" alt="Contact">
+          <span>Contact Me</span>
+        </div>
+        <div class="start-item" onclick="toggleWindow('resumeWindow')">
+          <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="Resume">
+          <span>Resume</span>
+        </div>
+        <div class="start-item" onclick="toggleWindow('skillsWindow')">
+          <img src="assets\windowicons\tool.png" alt="Skills">
+          <span>Skills</span>
+        </div>
+        
+        <div class="start-category">Entertainment</div>
+        <div class="start-item" onclick="toggleWindow('musicWindow')">
+          <img src="assets\start\My_Music.png" alt="Music Player">
+          <span>Music Player</span>
+        </div>
+        <div class="start-item" onclick="toggleWindow('gamesWindow')">
+          <img src="assets\start\Game.png" alt="Games">
+          <span>Games</span>
+        </div>
+        
+        <div class="start-category">System</div>
+        <div class="start-item-with-submenu">
+          <div class="start-item">
+            <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-0.png" alt="Control Panel">
+            <span>Control Panel</span>
+          </div>
+          <div class="start-submenu">
+            <div class="start-item" onclick="toggleTheme()">
+              <img src="https://win98icons.alexmeub.com/icons/png/display_properties-0.png" alt="Display">
+              <span>Display Settings</span>
+            </div>
+            <div class="start-item" onclick="toggleSound()">
+              <img src="https://win98icons.alexmeub.com/icons/png/sound-0.png" alt="Sound">
+              <span>Sound Settings</span>
+            </div>
+            <div class="start-separator"></div>
+            <div class="start-item" onclick="aboutSystem()">
+              <img src="https://win98icons.alexmeub.com/icons/png/computer_2-5.png" alt="System">
+              <span>System Properties</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="start-item" onclick="openSearch()">
+          <img src="https://win98icons.alexmeub.com/icons/png/search_file-0.png" alt="Search">
+          <span>Search</span>
+        </div>
+        <div class="start-item">
+          <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-0.png" alt="Help">
+          <span>Help and Support</span>
+        </div>
+        
+        <div class="start-separator"></div>
+        <div class="start-item" onclick="confirmShutdown()">
+          <img src="assets\start\Power.png" alt="Shut Down">
+          <span>Shut Down</span>
+        </div>
+        <div class="start-item" onclick="confirmRestart()">
+          <img src="assets\start\Restart.png" alt="Restart">
+          <span>Restart</span>
+        </div>
+      </div>
+    </div>
+    <div class="start-footer">
+      <div class="all-programs">
+        <img src="https://win98icons.alexmeub.com/icons/png/directory_closed-0.png" alt="All Programs">
+        <span>All Programs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <div class="taskbar">
+    <div class="start-button" onclick="toggleStartMenu()">
+      <img src="assets\start\startwindowicon.png" alt="Start">
+      <span>Start</span>
+    </div>
+    <div class="taskbar-items">
+      <div id="contactTaskbar" class="taskbar-item" onclick="toggleWindow('contactWindow')">
+        <img src="assets\windowicons\Address_Book.png" alt="Contact">
+        <span>Contact Me</span>
+      </div>
+      <div id="resumeTaskbar" class="taskbar-item" onclick="toggleWindow('resumeWindow')">
+        <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="Resume">
+        <span>Resume</span>
+      </div>
+      <div id="projectsTaskbar" class="taskbar-item" onclick="toggleWindow('projectsWindow')">
+        <img src="assets\windowicons\Folder_View.png" alt="Projects">
+        <span>Projects</span>
+      </div>
+      <div id="gamesTaskbar" class="taskbar-item" onclick="toggleWindow('gamesWindow')">
+        <img src="assets\start\Game.png" alt="Games">
+        <span>Games</span>
+      </div>
+      <div id="musicTaskbar" class="taskbar-item" onclick="toggleWindow('musicWindow')">
+        <img src="assets\start\My_Music.png" alt="Music Player">
+        <span>Music Player</span>
+      </div>
+      <div id="skillsTaskbar" class="taskbar-item" onclick="toggleWindow('skillsWindow')">
+        <img src="assets\windowicons\tool.png" alt="Skills">
+        <span>Skills</span>
+      </div>
+    </div>
+    <div class="tray">
+      <div class="clock" id="clock">00:00:00</div>
+    </div>
+  </div>
+
+  <!-- Tic Tac Toe Game Window -->
+  <div id="tictactoeWindow" class="window" style="display:none; top:150px; left:150px; width:400px; height:480px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Tic Tac Toe</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWindow('tictactoeWindow')"></button>
+        <button aria-label="Maximize" onclick="maximizeWindow('tictactoeWindow')"></button>
+        <button aria-label="Close" onclick="closeWindow('tictactoeWindow')"></button>
+      </div>
+    </div>
+    <div class="window-body xp-window-body">
+      <div class="xp-window-header">
+        <img src="assets\games\tic-tac-toe.png" alt="Tic Tac Toe">
+        <h3>Tic Tac Toe</h3>
+      </div>
+      
+      <div class="xp-game-container" style="height: auto; min-height: 350px;">
+        <div class="xp-game-status">
+          Current Player: <span id="player-display" class="player-x">X</span>
+        </div>
+        
+        <div class="xp-game-message" id="result-display"></div>
+        
+        <div class="board" id="game-board">
+          <div class="cell" id="cell-0"></div>
+          <div class="cell" id="cell-1"></div>
+          <div class="cell" id="cell-2"></div>
+          <div class="cell" id="cell-3"></div>
+          <div class="cell" id="cell-4"></div>
+          <div class="cell" id="cell-5"></div>
+          <div class="cell" id="cell-6"></div>
+          <div class="cell" id="cell-7"></div>
+          <div class="cell" id="cell-8"></div>
+        </div>
+        
+        <div class="xp-game-controls">
+          <button class="xp-reset-button" id="reset-button">
+            <img src="assets\games\Undo.png" alt="Reset">
+            Reset Game
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Command Prompt Window -->
+  <div id="cmdWindow" class="window cmd-window" style="display:none; top:200px; left:300px; width:600px; height:400px;">
+    <div class="title-bar cmd-title-bar">
+      <div class="title-bar-text">Command Prompt</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" onclick="minimizeWindow('cmdWindow')"></button>
+        <button aria-label="Maximize" onclick="maximizeWindow('cmdWindow')"></button>
+        <button aria-label="Close" onclick="closeWindow('cmdWindow')"></button>
+      </div>
+    </div>
+    <div class="window-body cmd-window-body">
+      <div class="cmd-output" id="cmdOutput"></div>
+      <div class="cmd-input-line">
+        <div class="cmd-prompt">C:\Users\Portfolio></div>
+        <input type="text" id="cmdInput" class="cmd-input" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Window Management System
+    const windowSystem = {
+      windows: {},
+      activeWindow: null,
+      
+      // Register a window
+      register: function(id) {
+        const element = document.getElementById(id);
+        if (!element) return;
+        
+        this.windows[id] = {
+          element: element,
+          minimized: false,
+          maximized: false
+        };
+        
+        this.initializeWindow(id);
+      },
+      
+      // Initialize window controls and behavior
+      initializeWindow: function(id) {
+        const win = this.windows[id];
+        if (!win || !win.element) return;
+        
+        const oldHandles = win.element.querySelectorAll('.resize-handles');
+        oldHandles.forEach(handle => handle.remove());
+        
+        this.addResizeHandles(win.element);
+        this.makeDraggable(win.element);
+        
+        win.element.addEventListener('mousedown', () => {
+          this.activateWindow(id);
+        });
+        
+        win.element.style.display = 'none';
+      },
+      
+      // Add resize handles to a window
+      addResizeHandles: function(element) {
+        const handles = document.createElement('div');
+        handles.className = 'resize-handles';
+        
+        const directions = ['top', 'right', 'bottom', 'left', 'top-left', 'top-right', 'bottom-left', 'bottom-right'];
+        
+        directions.forEach(dir => {
+          const handle = document.createElement('div');
+          handle.className = `resize-handle ${dir}`;
+          
+          handle.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            this.startResize(e, element, dir);
+          });
+          
+          handles.appendChild(handle);
+        });
+        
+        element.appendChild(handles);
+      },
+      
+      // Start resize operation
+      startResize: function(e, element, direction) {
+        e.preventDefault();
+        
+        for (const id in this.windows) {
+          if (this.windows[id].element === element) {
+            this.activateWindow(id);
+            break;
+          }
+        }
+        
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const startWidth = element.offsetWidth;
+        const startHeight = element.offsetHeight;
+        const startTop = element.offsetTop;
+        const startLeft = element.offsetLeft;
+        
+        const resize = (e) => {
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          const minWidth = 200;
+          const minHeight = 150;
+          const taskbarHeight = 40;
+          const maxBottom = window.innerHeight - taskbarHeight;
+          
+          if (direction.includes('right')) {
+            const newWidth = Math.max(minWidth, startWidth + dx);
+            element.style.width = `${newWidth}px`;
+          }
+          
+          if (direction.includes('bottom')) {
+            let newHeight = Math.max(minHeight, startHeight + dy);
+            if (startTop + newHeight > maxBottom) {
+              newHeight = maxBottom - startTop;
+            }
+            element.style.height = `${newHeight}px`;
+          }
+          
+          if (direction.includes('left')) {
+            const newWidth = Math.max(minWidth, startWidth - dx);
+            element.style.width = `${newWidth}px`;
+            element.style.left = `${startLeft + startWidth - newWidth}px`;
+          }
+          
+          if (direction.includes('top')) {
+            const newHeight = Math.max(minHeight, startHeight - dy);
+            element.style.height = `${newHeight}px`;
+            element.style.top = `${startTop + startHeight - newHeight}px`;
+          }
+        };
+        
+        const stopResize = () => {
+          document.removeEventListener('mousemove', resize);
+          document.removeEventListener('mouseup', stopResize);
+        };
+        
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', stopResize);
+      },
+      
+      // Make a window draggable by its title bar
+      makeDraggable: function(element) {
+        const titleBar = element.querySelector('.title-bar');
+        if (!titleBar) return;
+        
+        titleBar.onmousedown = (e) => {
+          if (e.target.tagName === 'BUTTON') return;
+          
+          e.preventDefault();
+          
+          for (const id in this.windows) {
+            if (this.windows[id].element === element) {
+              this.activateWindow(id);
+              break;
+            }
+          }
+          
+          const startX = e.clientX;
+          const startY = e.clientY;
+          const startLeft = element.offsetLeft;
+          const startTop = element.offsetTop;
+          
+          const drag = (e) => {
+            let newLeft = startLeft + (e.clientX - startX);
+            let newTop = startTop + (e.clientY - startY);
+            
+            if (newLeft < 0) newLeft = 0;
+            if (newTop < 0) newTop = 0;
+            
+            const maxRight = window.innerWidth - element.offsetWidth;
+            if (newLeft > maxRight) newLeft = maxRight;
+            
+            const taskbarHeight = 40;
+            const maxBottom = window.innerHeight - taskbarHeight - element.offsetHeight;
+            if (newTop > maxBottom) newTop = maxBottom;
+            
+            element.style.left = `${newLeft}px`;
+            element.style.top = `${newTop}px`;
+          };
+          
+          const stopDrag = () => {
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+          };
+          
+          document.addEventListener('mousemove', drag);
+          document.addEventListener('mouseup', stopDrag);
+        };
+      },
+      
+      // Open a window
+      openWindow: function(id) {
+        if (!this.windows[id]) {
+          this.register(id);
+        }
+        
+        const win = this.windows[id];
+        if (!win || !win.element) return;
+        
+        win.element.style.display = 'block';
+        this.activateWindow(id);
+        
+        const taskbarItem = document.getElementById(id.replace('Window', 'Taskbar'));
+        if (taskbarItem) {
+          taskbarItem.classList.add('active');
+        }
+      },
+      
+      // Close a window
+      closeWindow: function(id) {
+        const win = this.windows[id];
+        if (!win || !win.element) return;
+        
+        win.element.style.display = 'none';
+        
+        const taskbarItem = document.getElementById(id.replace('Window', 'Taskbar'));
+        if (taskbarItem) {
+          taskbarItem.classList.remove('active');
+        }
+        
+        if (this.activeWindow === id) {
+          this.activeWindow = null;
+        }
+      },
+      
+      // Minimize a window
+      minimizeWindow: function(id) {
+        const win = this.windows[id];
+        if (!win || !win.element) return;
+        
+        win.element.style.display = 'none';
+        win.minimized = true;
+      },
+      
+      // Maximize a window
+      maximizeWindow: function(id) {
+        const win = this.windows[id];
+        if (!win || !win.element) return;
+        
+        const taskbarHeight = 40;
+        
+        if (!win.maximized) {
+          win.restoreWidth = win.element.offsetWidth;
+          win.restoreHeight = win.element.offsetHeight;
+          win.restoreLeft = win.element.offsetLeft;
+          win.restoreTop = win.element.offsetTop;
+          
+          win.element.style.width = '100%';
+          win.element.style.height = `calc(100vh - ${taskbarHeight}px)`;
+          win.element.style.top = '0';
+          win.element.style.left = '0';
+          win.maximized = true;
+        } else {
+          win.element.style.width = `${win.restoreWidth}px`;
+          win.element.style.height = `${win.restoreHeight}px`;
+          win.element.style.top = `${win.restoreTop}px`;
+          win.element.style.left = `${win.restoreLeft}px`;
+          win.maximized = false;
+        }
+        
+        this.activateWindow(id);
+      },
+      
+      // Toggle window visibility (for taskbar clicks)
+      toggleWindow: function(id) {
+        const win = this.windows[id];
+        if (!win || !win.element) return;
+        
+        if (win.element.style.display === 'none') {
+          win.element.style.display = 'block';
+          this.activateWindow(id);
+        } else if (this.activeWindow === id) {
+          this.minimizeWindow(id);
+        } else {
+          this.activateWindow(id);
+        }
+      },
+      
+      // Activate (bring to front) a window
+      activateWindow: function(id) {
+        const win = this.windows[id];
+        if (!win || !win.element) return;
+        
+        for (const wid in this.windows) {
+          const w = this.windows[wid];
+          if (w && w.element) {
+            w.element.style.zIndex = (wid === id) ? '100' : '10';
+          }
+        }
+        
+        this.activeWindow = id;
+      }
+    };
+
+    // Audio continuity from boot screen
+    window.addEventListener('DOMContentLoaded', () => {
+      const startupSound = document.getElementById('startupSound');
+      const isPlaying = localStorage.getItem('xpAudioPlaying') === 'true';
+      const audioTime = parseFloat(localStorage.getItem('xpAudioTime') || '0');
+      
+      if (isPlaying && !isNaN(audioTime)) {
+        // Set the current time to where it left off in boot.html
+        startupSound.currentTime = audioTime;
+        
+        // Try to play the sound immediately
+        const playPromise = startupSound.play();
+        if (playPromise) {
+          playPromise.catch(error => {
+            console.error('Could not continue audio playback:', error);
+            
+            // Add a click event listener to the document to play audio on user interaction
+            const playAudioOnClick = () => {
+              startupSound.play().catch(e => console.error('Still could not play audio:', e));
+              document.removeEventListener('click', playAudioOnClick);
+            };
+            
+            document.addEventListener('click', playAudioOnClick);
+          });
+        }
+        
+        // Clean up after playback completes
+        startupSound.addEventListener('ended', () => {
+          localStorage.removeItem('xpAudioTime');
+          localStorage.removeItem('xpAudioPlaying');
+        });
+      } else {
+        // Clean up any leftover storage
+        localStorage.removeItem('xpAudioTime');
+        localStorage.removeItem('xpAudioPlaying');
+      }
+    });
+
+    // Modify the openWindow function to initialize the game
+    const originalOpenWindow = windowSystem.openWindow;
+    windowSystem.openWindow = function(id) {
+      originalOpenWindow.call(this, id);
+    };
+
+    // Window functions
+    function openWindow(id) {
+      windowSystem.openWindow(id);
+    }
+    
+    function closeWindow(id) {
+      windowSystem.closeWindow(id);
+    }
+    
+    function minimizeWindow(id) {
+      windowSystem.minimizeWindow(id);
+    }
+    
+    function maximizeWindow(id) {
+      windowSystem.maximizeWindow(id);
+    }
+    
+    function toggleWindow(id) {
+      windowSystem.toggleWindow(id);
+    }
+    
+    // Start Menu functions
+    let startMenuVisible = false;
+    
+    function toggleStartMenu() {
+      const startMenu = document.getElementById('startMenu');
+      const startButton = document.querySelector('.start-button');
+      
+      startMenuVisible = !startMenuVisible;
+      
+      if (startMenuVisible) {
+        startMenu.style.display = 'block';
+        startButton.classList.add('active');
+      } else {
+        startMenu.style.display = 'none';
+        startButton.classList.remove('active');
+      }
+    }
+    
+    // Shutdown function
+    function confirmShutdown() {
+      if (confirm("Are you sure you want to shut down Windows XP?")) {
+        // Redirect to boot.html with shutdown parameter
+        window.location.href = 'boot.html?mode=shutdown';
+      }
+      toggleStartMenu();
+    }
+    
+    // Restart function
+    function confirmRestart() {
+      if (confirm("Are you sure you want to restart Windows XP?")) {
+        // Redirect to boot.html with restart parameter
+        window.location.href = 'boot.html?mode=restart';
+      }
+      toggleStartMenu();
+    }
+    
+    // System functions
+    function openCmdPrompt() {
+      openWindow('cmdWindow');
+      toggleStartMenu();
+    }
+    
+    function openSearch() {
+      alert("Search functionality would be implemented here.");
+      toggleStartMenu();
+    }
+    
+    function toggleTheme() {
+      // This is a placeholder for theme switching functionality
+      alert("Theme settings would be implemented here.");
+      toggleStartMenu();
+    }
+    
+    function toggleSound() {
+      // This is a placeholder for sound settings
+      alert("Sound settings would be implemented here.");
+      toggleStartMenu();
+    }
+    
+    function aboutSystem() {
+      alert("Windows XP Portfolio\nVersion 1.0\nDeveloped by Joshith");
+      toggleStartMenu();
+    }
+    
+    // Form handling
+    function handleContactForm() {
+      const contactForm = document.getElementById('contactForm');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const name = document.getElementById('name').value;
+          alert(`Thank you, ${name}! Your message has been sent.`);
+          contactForm.reset();
+        });
+      }
+    }
+
+    // Resume download
+    function downloadResume() {
+      const link = document.createElement('a');
+      link.href = 'assets\\resume\\resume.pdf';
+      link.download = 'Joshith_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Clock function
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hours12 = hours % 12 || 12;
+      
+      document.getElementById("clock").innerText = `${hours12}:${minutes} ${ampm}`;
+    }
+
+    // Close start menu when clicking elsewhere
+    document.addEventListener('click', function(e) {
+      const startMenu = document.getElementById('startMenu');
+      const startButton = document.querySelector('.start-button');
+      
+      if (startMenuVisible && 
+          !startMenu.contains(e.target) && 
+          !startButton.contains(e.target)) {
+        startMenuVisible = false;
+        startMenu.style.display = 'none';
+        startButton.classList.remove('active');
+      }
+    });
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', function() {
+      const windows = document.querySelectorAll('.window');
+      windows.forEach(win => {
+        if (win.id) {
+          windowSystem.register(win.id);
+        }
+      });
+      
+      updateClock();
+      setInterval(updateClock, 1000);
+      
+      handleContactForm();
+      
+      // Add a one-time click event listener to play the startup sound
+      const startupSound = document.getElementById('startupSound');
+      if (startupSound) {
+        const playStartupSound = () => {
+          startupSound.play().catch(e => console.error('Could not play startup sound:', e));
+          document.removeEventListener('click', playStartupSound);
+        };
+        document.addEventListener('click', playStartupSound);
+      }
+      
+      // Setup CMD window initialization
+      const cmdOriginalOpenWindow = windowSystem.openWindow;
+      windowSystem.openWindow = function(id) {
+        cmdOriginalOpenWindow.call(this, id);
+        if (id === 'cmdWindow') {
+          cmdSystem.init();
+        }
+      };
+    });
+
+    // Music Player Functions
+    let audioPlayer = new Audio();
+    let isPlaying = false;
+    let currentTrackIndex = 0;
+
+    // Updated playlist with user's songs
+    const playlist = [
+      {
+        title: "How You Remind Me",
+        src: "assets\\music\\01. How You Remind Me.mp3"
+      },
+      {
+        title: "Hanging By A Moment",
+        src: "assets\\music\\LifehouseHangingByAMoment.mp3"
+      },
+      {
+        title: "Yeah! - Usher ft. Lil Jon & Ludacris",
+        src: "assets\\music\\Usher Featuring Lil Jon & Ludacris - Yeah!.mp3"
+      },
+      {
+        title: "We Belong Together",
+        src: "assets\\music\\We Belong Together - Various.mp3"
+      }
+    ];
+
+    function initMusicPlayer() {
+      // Set up event listeners for audio player
+      audioPlayer.addEventListener('timeupdate', updateProgress);
+      audioPlayer.addEventListener('ended', nextTrack);
+      audioPlayer.addEventListener('loadedmetadata', updateTotalTime);
+      
+      // Initial volume
+      audioPlayer.volume = 1.0;
+    }
+
+    function selectTrack(index) {
+      currentTrackIndex = index;
+      
+      // Update selection in playlist
+      document.querySelectorAll('.xp-playlist-item').forEach((item, i) => {
+        if (i === index) {
+          item.classList.add('selected');
+        } else {
+          item.classList.remove('selected');
+        }
+      });
+      
+      // Load and play the track
+      audioPlayer.src = playlist[index].src;
+      document.getElementById('nowPlaying').textContent = playlist[index].title;
+      
+      // Reset visualization
+      toggleVisualization(false);
+      
+      audioPlayer.load();
+      audioPlayer.play()
+        .then(() => {
+          isPlaying = true;
+          updatePlayPauseButton();
+          toggleVisualization(true);
+        })
+        .catch(error => {
+          console.error("Error playing audio:", error);
+          isPlaying = false;
+          updatePlayPauseButton();
+        });
+    }
+
+    function togglePlay() {
+      if (audioPlayer.src) {
+        if (isPlaying) {
+          audioPlayer.pause();
+          toggleVisualization(false);
+        } else {
+          audioPlayer.play()
+            .then(() => toggleVisualization(true))
+            .catch(error => console.error("Error playing audio:", error));
+        }
+        isPlaying = !isPlaying;
+        updatePlayPauseButton();
+      } else if (playlist.length > 0) {
+        // No track loaded yet, select the first one
+        selectTrack(0);
+      }
+    }
+
+    function updatePlayPauseButton() {
+      const icon = document.getElementById('playPauseIcon');
+      if (isPlaying) {
+        icon.src = "assets\\music\\icons\\Pause.png";
+        icon.alt = "Pause";
+      } else {
+        icon.src = "assets\\music\\icons\\Play.png";
+        icon.alt = "Play";
+      }
+    }
+
+    function prevTrack() {
+      let newIndex = currentTrackIndex - 1;
+      if (newIndex < 0) newIndex = playlist.length - 1;
+      selectTrack(newIndex);
+    }
+
+    function nextTrack() {
+      let newIndex = currentTrackIndex + 1;
+      if (newIndex >= playlist.length) newIndex = 0;
+      selectTrack(newIndex);
+    }
+
+    function adjustVolume(value) {
+      audioPlayer.volume = value / 100;
+    }
+
+    function updateProgress() {
+      const progressFill = document.getElementById('progressFill');
+      const current = document.getElementById('currentTime');
+      
+      const percentage = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+      progressFill.style.width = `${percentage}%`;
+      
+      current.textContent = formatTime(audioPlayer.currentTime);
+    }
+
+    function updateTotalTime() {
+      document.getElementById('totalTime').textContent = formatTime(audioPlayer.duration);
+    }
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    function toggleVisualization(show) {
+      const bars = document.querySelectorAll('.xp-visualization .bar');
+      bars.forEach(bar => {
+        bar.style.animationPlayState = show ? 'running' : 'paused';
+      });
+    }
+
+    // Add this to your window event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Your existing code
+      initMusicPlayer();
+      
+      // When the music window is first opened
+      const originalOpenWindow = windowSystem.openWindow;
+      windowSystem.openWindow = function(id) {
+        originalOpenWindow.call(this, id);
+        if (id === 'musicWindow') {
+          // Don't set audio source automatically - wait for user to play
+          document.getElementById('nowPlaying').textContent = "Select a track to play";
+        }
+      };
+    });
+
+    // Minesweeper Game Logic
+    let minesweeper = {
+      grid: [],
+      mines: 10,
+      rows: 9,
+      cols: 9,
+      gameOver: false,
+      firstClick: true,
+      timer: null,
+      timeElapsed: 0,
+      mineCount: 10
+    };
+
+    function openMinesweeper() {
+      const minesweeperWindow = document.getElementById('minesweeperWindow');
+      const gamesWindow = document.getElementById('gamesWindow');
+      
+      // Position the Minesweeper window next to the games window
+      if (gamesWindow && gamesWindow.style.display === 'block') {
+        const gamesRect = gamesWindow.getBoundingClientRect();
+        minesweeperWindow.style.top = `${gamesRect.top}px`;
+        minesweeperWindow.style.left = `${gamesRect.right + 20}px`;
+      }
+      
+      minesweeperWindow.style.display = 'block';
+      windowSystem.activateWindow('minesweeperWindow');
+      initializeMinesweeper();
+    }
+
+    function initializeMinesweeper() {
+      minesweeper.grid = [];
+      minesweeper.gameOver = false;
+      minesweeper.firstClick = true;
+      minesweeper.timeElapsed = 0;
+      minesweeper.mineCount = 10;
+      updateMineCounter();
+      updateTimer();
+      clearInterval(minesweeper.timer);
+
+      // Create grid
+      for (let i = 0; i < minesweeper.rows; i++) {
+        minesweeper.grid[i] = [];
+        for (let j = 0; j < minesweeper.cols; j++) {
+          minesweeper.grid[i][j] = {
+            isMine: false,
+            isRevealed: false,
+            isFlagged: false,
+            neighborMines: 0
+          };
+        }
+      }
+
+      // Create grid UI
+      const gridElement = document.getElementById('minesweeperGrid');
+      gridElement.innerHTML = '';
+      for (let i = 0; i < minesweeper.rows; i++) {
+        for (let j = 0; j < minesweeper.cols; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.dataset.row = i;
+          cell.dataset.col = j;
+          cell.addEventListener('click', () => handleCellClick(i, j));
+          cell.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            handleRightClick(i, j);
+          });
+          gridElement.appendChild(cell);
+        }
+      }
+    }
+
+    function placeMines(firstRow, firstCol) {
+      let minesPlaced = 0;
+      while (minesPlaced < minesweeper.mines) {
+        const row = Math.floor(Math.random() * minesweeper.rows);
+        const col = Math.floor(Math.random() * minesweeper.cols);
+        
+        // Don't place mine on first click or where a mine already exists
+        if ((row === firstRow && col === firstCol) || minesweeper.grid[row][col].isMine) {
+          continue;
+        }
+        
+        minesweeper.grid[row][col].isMine = true;
+        minesPlaced++;
+      }
+
+      // Calculate neighbor mines
+      for (let i = 0; i < minesweeper.rows; i++) {
+        for (let j = 0; j < minesweeper.cols; j++) {
+          if (!minesweeper.grid[i][j].isMine) {
+            minesweeper.grid[i][j].neighborMines = countNeighborMines(i, j);
+          }
+        }
+      }
+    }
+
+    function countNeighborMines(row, col) {
+      let count = 0;
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const newRow = row + i;
+          const newCol = col + j;
+          if (newRow >= 0 && newRow < minesweeper.rows && 
+              newCol >= 0 && newCol < minesweeper.cols &&
+              minesweeper.grid[newRow][newCol].isMine) {
+            count++;
+          }
+        }
+      }
+      return count;
+    }
+
+    function handleCellClick(row, col) {
+      if (minesweeper.gameOver || minesweeper.grid[row][col].isFlagged) return;
+
+      if (minesweeper.firstClick) {
+        minesweeper.firstClick = false;
+        placeMines(row, col);
+        startTimer();
+      }
+
+      const cell = minesweeper.grid[row][col];
+      if (cell.isMine) {
+        gameOver(false);
+        return;
+      }
+
+      revealCell(row, col);
+      checkWin();
+    }
+
+    function handleRightClick(row, col) {
+      if (minesweeper.gameOver || minesweeper.grid[row][col].isRevealed) return;
+
+      const cell = minesweeper.grid[row][col];
+      cell.isFlagged = !cell.isFlagged;
+      minesweeper.mineCount += cell.isFlagged ? -1 : 1;
+      updateMineCounter();
+      updateCell(row, col);
+    }
+
+    function revealCell(row, col) {
+      const cell = minesweeper.grid[row][col];
+      if (cell.isRevealed || cell.isFlagged) return;
+
+      cell.isRevealed = true;
+      updateCell(row, col);
+
+      if (cell.neighborMines === 0) {
+        for (let i = -1; i <= 1; i++) {
+          for (let j = -1; j <= 1; j++) {
+            const newRow = row + i;
+            const newCol = col + j;
+            if (newRow >= 0 && newRow < minesweeper.rows && 
+                newCol >= 0 && newCol < minesweeper.cols) {
+              revealCell(newRow, newCol);
+            }
+          }
+        }
+      }
+    }
+
+    function updateCell(row, col) {
+      const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+      const gridCell = minesweeper.grid[row][col];
+
+      cell.className = 'cell';
+      if (gridCell.isRevealed) {
+        cell.classList.add('revealed');
+        if (gridCell.isMine) {
+          cell.classList.add('mine');
+          cell.textContent = '💣';
+        } else if (gridCell.neighborMines > 0) {
+          cell.textContent = gridCell.neighborMines;
+          cell.classList.add(`number-${gridCell.neighborMines}`);
+        }
+      } else if (gridCell.isFlagged) {
+        cell.textContent = '🚩';
+      } else {
+        cell.textContent = '';
+      }
+    }
+
+    function gameOver(won) {
+      minesweeper.gameOver = true;
+      clearInterval(minesweeper.timer);
+      
+      // Reveal all mines
+      for (let i = 0; i < minesweeper.rows; i++) {
+        for (let j = 0; j < minesweeper.cols; j++) {
+          if (minesweeper.grid[i][j].isMine) {
+            minesweeper.grid[i][j].isRevealed = true;
+            updateCell(i, j);
+          }
+        }
+      }
+
+      // Update reset button
+      const resetButton = document.querySelector('.reset-button');
+      resetButton.textContent = won ? '😎' : '😵';
+    }
+
+    function checkWin() {
+      let unrevealedCount = 0;
+      for (let i = 0; i < minesweeper.rows; i++) {
+        for (let j = 0; j < minesweeper.cols; j++) {
+          if (!minesweeper.grid[i][j].isRevealed && !minesweeper.grid[i][j].isMine) {
+            unrevealedCount++;
+          }
+        }
+      }
+      if (unrevealedCount === 0) {
+        gameOver(true);
+      }
+    }
+
+    function startTimer() {
+      minesweeper.timer = setInterval(() => {
+        minesweeper.timeElapsed++;
+        updateTimer();
+      }, 1000);
+    }
+
+    function updateTimer() {
+      const timerElement = document.querySelector('.timer');
+      timerElement.textContent = minesweeper.timeElapsed.toString().padStart(3, '0');
+    }
+
+    function updateMineCounter() {
+      const counterElement = document.querySelector('.mine-counter');
+      counterElement.textContent = minesweeper.mineCount.toString().padStart(3, '0');
+    }
+
+    function resetMinesweeper() {
+      const resetButton = document.querySelector('.reset-button');
+      resetButton.textContent = '😊';
+      initializeMinesweeper();
+    }
+     
+    // Add Tic Tac Toe as an IIFE to avoid conflicts
+    (function() {
+      // Game state
+      let currentPlayer = 'X';
+      let gameBoard = ['', '', '', '', '', '', '', '', ''];
+      let gameActive = true;
+      
+      // Winning combinations
+      const winningCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+        [0, 4, 8], [2, 4, 6]             // diagonals
+      ];
+      
+      // DOM elements
+      let cells;
+      let playerDisplay;
+      let resultDisplay;
+      let resetButton;
+      
+      // Initialize game
+      function initTicTacToe() {
+        cells = Array.from(document.querySelectorAll('#game-board .cell'));
+        playerDisplay = document.getElementById('player-display');
+        resultDisplay = document.getElementById('result-display');
+        resetButton = document.getElementById('reset-button');
+        
+        // Add event listeners
+        cells.forEach((cell, index) => {
+          cell.addEventListener('click', () => handleCellClick(index));
+        });
+        
+        resetButton.addEventListener('click', resetGame);
+        
+        // Initialize the game state
+        resetGame();
+      }
+      
+      // Handle a cell click
+      function handleCellClick(index) {
+        // Ignore click if cell is already filled or game is not active
+        if (gameBoard[index] !== '' || !gameActive) {
+          return;
+        }
+        
+        // Update the board and UI
+        gameBoard[index] = currentPlayer;
+        cells[index].textContent = currentPlayer;
+        cells[index].classList.add(currentPlayer.toLowerCase());
+        
+        // Check for win or draw
+        if (checkWin()) {
+          resultDisplay.textContent = `Player ${currentPlayer} wins!`;
+          gameActive = false;
+          highlightWinningCells();
+          return;
+        }
+        
+        if (checkDraw()) {
+          resultDisplay.textContent = "It's a draw!";
+          gameActive = false;
+          return;
+        }
+        
+        // Switch players
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        updatePlayerDisplay();
+      }
+      
+      // Check if the current player has won
+      function checkWin() {
+        return winningCombinations.some(combination => {
+          return combination.every(index => {
+            return gameBoard[index] === currentPlayer;
+          });
+        });
+      }
+      
+      // Check if it's a draw
+      function checkDraw() {
+        return gameBoard.every(cell => cell !== '');
+      }
+      
+      // Highlight the winning cells
+      function highlightWinningCells() {
+        winningCombinations.forEach(combination => {
+          if (
+            gameBoard[combination[0]] === currentPlayer &&
+            gameBoard[combination[1]] === currentPlayer &&
+            gameBoard[combination[2]] === currentPlayer
+          ) {
+            combination.forEach(index => {
+              cells[index].classList.add('win');
+            });
+          }
+        });
+      }
+      
+      // Update the player display
+      function updatePlayerDisplay() {
+        playerDisplay.textContent = currentPlayer;
+        playerDisplay.className = currentPlayer === 'X' ? 'player-x' : 'player-o';
+      }
+      
+      // Reset the game
+      function resetGame() {
+        gameBoard = ['', '', '', '', '', '', '', '', ''];
+        gameActive = true;
+        currentPlayer = 'X';
+        
+        // Reset UI
+        resultDisplay.textContent = '';
+        cells.forEach(cell => {
+          cell.textContent = '';
+          cell.className = 'cell';
+        });
+        
+        updatePlayerDisplay();
+      }
+      
+      // Open Tic Tac Toe window
+      window.openTicTacToe = function() {
+        const tictactoeWindow = document.getElementById('tictactoeWindow');
+        const gamesWindow = document.getElementById('gamesWindow');
+        
+        // Position the Tic Tac Toe window next to the games window
+        if (gamesWindow && gamesWindow.style.display === 'block') {
+          const gamesRect = gamesWindow.getBoundingClientRect();
+          tictactoeWindow.style.top = `${gamesRect.top}px`;
+          tictactoeWindow.style.left = `${gamesRect.right + 20}px`;
+        }
+        
+        tictactoeWindow.style.display = 'block';
+        windowSystem.activateWindow('tictactoeWindow');
+        
+        // Ensure game is initialized
+        initTicTacToe();
+      };
+      
+      // Initialize on DOM load
+      document.addEventListener('DOMContentLoaded', initTicTacToe);
+    })();
+
+    // Command Prompt System
+    const cmdSystem = {
+      history: [],
+      historyIndex: -1,
+      commands: {
+        help: {
+          description: 'Shows available commands',
+          execute: () => {
+            return Object.entries(cmdSystem.commands)
+              .map(([cmd, info]) => `${cmd.padEnd(15)} - ${info.description}`)
+              .join('\n');
+          }
+        },
+        clear: {
+          description: 'Clears the command prompt screen',
+          execute: () => {
+            document.getElementById('cmdOutput').innerHTML = '';
+            return '';
+          }
+        },
+        about: {
+          description: 'Shows information about the portfolio',
+          execute: () => {
+            return `Welcome to Joshith's Windows XP Portfolio!
+
+This is a creative portfolio website that recreates the Windows XP experience.
+Feel free to explore the various windows and applications available.
+
+Type 'help' to see available commands.`;
+          }
+        },
+        projects: {
+          description: 'Lists all portfolio projects',
+          execute: () => {
+            return `Available Projects:
+------------------
+1. Windows XP Portfolio
+   - A personal portfolio website designed to replicate the Windows XP experience
+   - Features: Interactive desktop, games, music player
+
+2. C++ Data Structures Project
+   - Implementation of various data structures and algorithms in C++
+   - Features: Sorting algorithms, linked lists, and binary trees
+
+3. Java Programming Assignments
+   - Collection of Java programs demonstrating object-oriented programming concepts
+   - Features: Inheritance, polymorphism, and exception handling
+
+4. Python Data Analysis
+   - Simple data analysis projects using Python libraries
+   - Features: Data processing and visualization using NumPy and Pandas`;
+          }
+        },
+        skills: {
+          description: 'Lists technical skills',
+          execute: () => {
+            return `Technical Skills:
+----------------
+Programming Languages: C++, Java, Python
+Languages: Telugu (Native), Hindi (Limited Working), English (Professional Working), Spanish (Elementary)
+Tools: Git, GitHub, VS Code`;
+          }
+        },
+        contact: {
+          description: 'Shows contact information',
+          execute: () => {
+            return `Contact Information:
+------------------
+Location: Hyderabad, Telangana, India
+Email: gsaijoshithreddy@gmail.com
+LinkedIn: linkedin.com/in/joshith99
+GitHub: github.com/joshith99`;
+          }
+        },
+        date: {
+          description: 'Shows current date and time',
+          execute: () => {
+            return new Date().toLocaleString();
+          }
+        },
+        echo: {
+          description: 'Echoes the input text',
+          execute: (args) => args.join(' ')
+        },
+        cls: {
+          description: 'Clears the screen (alias for clear)',
+          execute: () => {
+            document.getElementById('cmdOutput').innerHTML = '';
+            return '';
+          }
+        },
+        exit: {
+          description: 'Closes the command prompt',
+          execute: () => {
+            closeWindow('cmdWindow');
+            return '';
+          }
+        }
+      },
+
+      init() {
+        const input = document.getElementById('cmdInput');
+        const output = document.getElementById('cmdOutput');
+        
+        // Clear any previous content
+        output.innerHTML = '';
+        
+        // Focus input when window is clicked
+        document.getElementById('cmdWindow').addEventListener('click', () => {
+          setTimeout(() => input.focus(), 0);
+        });
+        
+        // Make sure input has focus
+        setTimeout(() => input.focus(), 100);
+
+        // Handle input events
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            const command = input.value.trim();
+            input.value = '';
+            if (command) {
+              this.executeCommand(command);
+            }
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            this.navigateHistory('up');
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            this.navigateHistory('down');
+          }
+        });
+
+        // Show welcome message
+        this.addLine('Microsoft Windows XP [Version 5.1.2600]');
+        this.addLine('(C) Copyright 1985-2001 Microsoft Corp.');
+        this.addLine('');
+        this.addLine('Welcome to Joshith\'s Portfolio Command Prompt!');
+        this.addLine('Type \'help\' to see available commands.');
+        this.addLine('');
+      },
+
+      addLine(text, className = '') {
+        const output = document.getElementById('cmdOutput');
+        const line = document.createElement('div');
+        line.className = 'cmd-line' + (className ? ' cmd-' + className : '');
+        line.textContent = text;
+        output.appendChild(line);
+        output.scrollTop = output.scrollHeight;
+      },
+
+      executeCommand(command) {
+        // Add to history
+        this.history.push(command);
+        this.historyIndex = this.history.length;
+
+        // Show command
+        this.addLine(`C:\\Users\\Portfolio>${command}`);
+
+        // Parse command
+        const [cmd, ...args] = command.toLowerCase().split(' ');
+
+        // Execute command
+        if (this.commands[cmd]) {
+          const result = this.commands[cmd].execute(args);
+          if (result) {
+            result.split('\n').forEach(line => this.addLine(line));
+          }
+        } else {
+          this.addLine(`'${cmd}' is not recognized as an internal or external command,`, 'error');
+          this.addLine('operable program or batch file.', 'error');
+        }
+
+        // Add empty line after command output
+        this.addLine('');
+        
+        // Refocus the input
+        document.getElementById('cmdInput').focus();
+      },
+
+      navigateHistory(direction) {
+        const input = document.getElementById('cmdInput');
+        
+        if (direction === 'up' && this.historyIndex > 0) {
+          this.historyIndex--;
+          input.value = this.history[this.historyIndex];
+        } else if (direction === 'down' && this.historyIndex < this.history.length - 1) {
+          this.historyIndex++;
+          input.value = this.history[this.historyIndex];
+        } else if (direction === 'down' && this.historyIndex === this.history.length - 1) {
+          this.historyIndex = this.history.length;
+          input.value = '';
+        }
+      }
+    };
+
+    // Add CMD icon to desktop
+    document.querySelector('.desktop').innerHTML += `
+      <div class="icon" onclick="openWindow('cmdWindow')">
+        <img src="assets/windowicons/Command_Prompt.png" alt="Command Prompt">
+        <div>Command Prompt</div>
+      </div>
+    `;
+
+    // Add CMD to taskbar
+    document.querySelector('.taskbar-items').innerHTML += `
+      <div id="cmdTaskbar" class="taskbar-item" onclick="toggleWindow('cmdWindow')">
+        <img src="assets/windowicons/Command_Prompt.png" alt="Command Prompt">
+        <span>Command Prompt</span>
+      </div>
+    `;
+
+    // Initialize CMD when window is opened
+    const cmdOriginalOpenWindow = windowSystem.openWindow;
+    windowSystem.openWindow = function(id) {
+      cmdOriginalOpenWindow.call(this, id);
+      if (id === 'cmdWindow') {
+        cmdSystem.init();
+      }
+    };
+  </script>
+</body>
+</html>
